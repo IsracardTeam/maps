@@ -7,7 +7,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.location.Location;
 import android.os.Handler;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -41,6 +41,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.UiSettings;
+import com.mapbox.mapboxsdk.plugins.localization.MapLocale;
 import com.mapbox.mapboxsdk.style.expressions.Expression;
 import com.mapbox.mapboxsdk.style.layers.Layer;
 import com.mapbox.android.gestures.MoveGestureDetector;
@@ -111,6 +112,7 @@ public class RCTMGLMapView extends MapView implements OnMapReadyCallback, Mapbox
 
     private Integer mPreferredFramesPerSecond;
     private boolean mLocalizeLabels;
+    private String mLocale = MapLocale.ENGLISH;
     private Boolean mScrollEnabled;
     private Boolean mPitchEnabled;
     private Boolean mRotateEnabled;
@@ -391,7 +393,7 @@ public class RCTMGLMapView extends MapView implements OnMapReadyCallback, Mapbox
     @Override
     public void onMapReady(final MapboxMap mapboxMap) {
         MapView self = this;
-            
+
         mMap = mapboxMap;
 
         mMap.setStyle(new Style.Builder().fromUrl(mStyleURL));
@@ -401,19 +403,21 @@ public class RCTMGLMapView extends MapView implements OnMapReadyCallback, Mapbox
         mMap.getStyle(new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {
-                mLocalizationPlugin = new LocalizationPlugin(self, mMap, style);
+                mLocalizationPlugin = new LocalizationPlugin(self, mapboxMap, style);
+
+                createSymbolManager(style);
+                setUpImage(style);
+                addQueuedFeatures();
+
                 if (mLocalizeLabels) {
                     try {
-                        mLocalizationPlugin.matchMapLanguageWithDeviceDefault();
+                        mLocalizationPlugin.setMapLanguage(mLocale);
+                     //   mLocalizationPlugin.matchMapLanguageWithDeviceDefault();
                     } catch (Exception e) {
                         final String localeString = Locale.getDefault().toString();
                         Log.w(LOG_TAG, String.format("Could not find matching locale for %s", localeString));
                     }
                 }
-                    
-                createSymbolManager(style);
-                setUpImage(style);
-                addQueuedFeatures();
             }
         });
 
@@ -452,6 +456,7 @@ public class RCTMGLMapView extends MapView implements OnMapReadyCallback, Mapbox
             @Override
             public void onMoveEnd(MoveGestureDetector detector) {}
         });
+
     }
 
     public void reflow() {
@@ -726,6 +731,10 @@ public class RCTMGLMapView extends MapView implements OnMapReadyCallback, Mapbox
 
     public void setLocalizeLabels(boolean localizeLabels) {
         mLocalizeLabels = localizeLabels;
+    }
+
+    public void setLocale(String locale) {
+        mLocale = locale;
     }
 
     public void setReactZoomEnabled(boolean zoomEnabled) {
