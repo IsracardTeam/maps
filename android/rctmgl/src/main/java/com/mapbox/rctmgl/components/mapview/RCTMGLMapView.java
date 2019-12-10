@@ -31,6 +31,7 @@ import com.mapbox.mapboxsdk.plugins.annotation.Symbol;
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
 import com.mapbox.mapboxsdk.plugins.annotation.OnSymbolDragListener;
 import com.mapbox.mapboxsdk.plugins.annotation.OnSymbolClickListener;
+import com.mapbox.mapboxsdk.plugins.localization.LocalizationPlugin;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdate;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -104,6 +105,8 @@ public class RCTMGLMapView extends MapView implements OnMapReadyCallback, Mapbox
     private MapboxMap mMap;
 
     private String mStyleURL;
+                
+    private LocalizationPlugin mLocalizationPlugin;
 
     private Integer mPreferredFramesPerSecond;
     private boolean mLocalizeLabels;
@@ -395,6 +398,16 @@ public class RCTMGLMapView extends MapView implements OnMapReadyCallback, Mapbox
         mMap.getStyle(new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {
+                mLocalizationPlugin = new LocalizationPlugin(this, mMap);
+                if (mLocalizeLabels) {
+                    try {
+                        mLocalizationPlugin.matchMapLanguageWithDeviceDefault();
+                    } catch (Exception e) {
+                        final String localeString = Locale.getDefault().toString();
+                        Log.w(LOG_TAG, String.format("Could not find matching locale for %s", localeString));
+                    }
+                }
+                    
                 createSymbolManager(style);
                 setUpImage(style);
                 addQueuedFeatures();
