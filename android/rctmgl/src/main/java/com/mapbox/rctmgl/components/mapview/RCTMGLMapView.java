@@ -69,6 +69,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -389,6 +390,8 @@ public class RCTMGLMapView extends MapView implements OnMapReadyCallback, Mapbox
 
     @Override
     public void onMapReady(final MapboxMap mapboxMap) {
+        MapView self = this;
+            
         mMap = mapboxMap;
 
         mMap.setStyle(new Style.Builder().fromUrl(mStyleURL));
@@ -398,7 +401,7 @@ public class RCTMGLMapView extends MapView implements OnMapReadyCallback, Mapbox
         mMap.getStyle(new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {
-                mLocalizationPlugin = new LocalizationPlugin(this, mMap);
+                mLocalizationPlugin = new LocalizationPlugin(self, mMap, style);
                 if (mLocalizeLabels) {
                     try {
                         mLocalizationPlugin.matchMapLanguageWithDeviceDefault();
