@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import _ from 'underscore';
 
-import {makePoint, makeLatLngBounds} from '../utils/geoUtils';
+import { makePoint, makeLatLngBounds } from '../utils/geoUtils';
 import {
   isFunction,
   isNumber,
@@ -16,7 +16,7 @@ import {
   isAndroid,
   viewPropTypes,
 } from '../utils';
-import {getFilter} from '../utils/filterUtils';
+import { getFilter } from '../utils/filterUtils';
 
 import NativeBridgeComponent from './NativeBridgeComponent';
 
@@ -27,7 +27,7 @@ export const NATIVE_MODULE_NAME = 'RCTMGLMapView';
 export const ANDROID_TEXTURE_NATIVE_MODULE_NAME = 'RCTMGLAndroidTextureMapView';
 
 const styles = StyleSheet.create({
-  matchParent: {flex: 1},
+  matchParent: { flex: 1 },
 });
 
 /**
@@ -73,6 +73,11 @@ class MapView extends NativeBridgeComponent(React.Component) {
     localizeLabels: PropTypes.bool,
 
     /**
+     * Choose a locale for the map
+     */
+    locale: PropTypes.string,
+
+    /**
      * Enable/Disable zoom on the map
      */
     zoomEnabled: PropTypes.bool,
@@ -109,10 +114,10 @@ class MapView extends NativeBridgeComponent(React.Component) {
      * Adds attribution offset, e.g. `{top: 8, left: 8}` will put attribution button in top-left corner of the map
      */
     attributionPosition: PropTypes.oneOfType([
-      PropTypes.shape({top: PropTypes.number, left: PropTypes.number}),
-      PropTypes.shape({top: PropTypes.number, right: PropTypes.number}),
-      PropTypes.shape({bottom: PropTypes.number, left: PropTypes.number}),
-      PropTypes.shape({bottom: PropTypes.number, right: PropTypes.number}),
+      PropTypes.shape({ top: PropTypes.number, left: PropTypes.number }),
+      PropTypes.shape({ top: PropTypes.number, right: PropTypes.number }),
+      PropTypes.shape({ bottom: PropTypes.number, left: PropTypes.number }),
+      PropTypes.shape({ bottom: PropTypes.number, right: PropTypes.number }),
     ]),
 
     /**
@@ -239,6 +244,7 @@ class MapView extends NativeBridgeComponent(React.Component) {
 
   static defaultProps = {
     localizeLabels: false,
+    locale: '',
     scrollEnabled: true,
     pitchEnabled: true,
     rotateEnabled: true,
@@ -551,14 +557,14 @@ class MapView extends NativeBridgeComponent(React.Component) {
     if (isFunction(this.props.onRegionWillChange)) {
       this.props.onRegionWillChange(payload);
     }
-    this.setState({isUserInteraction: payload.properties.isUserInteraction});
+    this.setState({ isUserInteraction: payload.properties.isUserInteraction });
   }
 
   _onRegionDidChange(payload) {
     if (isFunction(this.props.onRegionDidChange)) {
       this.props.onRegionDidChange(payload);
     }
-    this.setState({region: payload});
+    this.setState({ region: payload });
   }
 
   _onChange(e) {
@@ -566,7 +572,7 @@ class MapView extends NativeBridgeComponent(React.Component) {
       regionWillChangeDebounceTime,
       regionDidChangeDebounceTime,
     } = this.props;
-    const {type, payload} = e.nativeEvent;
+    const { type, payload } = e.nativeEvent;
     let propName = '';
 
     switch (type) {
@@ -724,7 +730,7 @@ class MapView extends NativeBridgeComponent(React.Component) {
 }
 
 const RCTMGLMapView = requireNativeComponent(NATIVE_MODULE_NAME, MapView, {
-  nativeOnly: {onMapChange: true, onAndroidCallback: true},
+  nativeOnly: { onMapChange: true, onAndroidCallback: true },
 });
 
 let RCTMGLAndroidTextureMapView;
@@ -733,7 +739,7 @@ if (isAndroid()) {
     ANDROID_TEXTURE_NATIVE_MODULE_NAME,
     MapView,
     {
-      nativeOnly: {onMapChange: true, onAndroidCallback: true},
+      nativeOnly: { onMapChange: true, onAndroidCallback: true },
     },
   );
 }
