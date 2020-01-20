@@ -296,6 +296,19 @@ static double const M2PI = M_PI * 2;
     self.contentInset = UIEdgeInsetsMake(top, left, bottom, right);
 }
 
+
+- (void)setReactLocale:(NSString *)reactLocale
+{
+    _reactLocale = reactLocale;
+    self.reactLocale = _reactLocale
+}
+
+- (void)setReactLocalizeLabels:(BOOL)reactLocalizeLabels
+{
+    _reactLocalizeLabels = reactLocalizeLabels;
+    self.reactLocalizeLabels = _reactLocalizeLabels
+}
+
 - (void)setReactStyleURL:(NSString *)reactStyleURL
 {
     _reactStyleURL = reactStyleURL;
