@@ -525,6 +525,10 @@ RCT_EXPORT_METHOD(showAttribution:(nonnull NSNumber *)reactTag
         reactMapView.light.map = reactMapView;
     }
     
+    if(reactMapView.reactLocalizeLabels){
+        NSLocale *locale = [NSLocale localeWithLocaleIdentifier:reactMapView.reactLocale];
+        [style localizeLabelsIntoLocale:locale];
+    }
     [self reactMapDidChange:reactMapView eventType:RCT_MAPBOX_DID_FINISH_LOADING_STYLE];
 }
 
