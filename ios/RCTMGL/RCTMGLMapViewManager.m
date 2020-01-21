@@ -90,6 +90,12 @@ RCT_EXPORT_VIEW_PROPERTY(onPress, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onLongPress, RCTBubblingEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onMapChange, RCTBubblingEventBlock)
 
+RCT_CUSTOM_VIEW_PROPERTY(locale, NSString, RCTMGLMapView) {
+    if ([json isKindOfClass:[NSString class]]) {
+        NSString *stringValue = (NSString *)json;
+        view.reactLocale = stringValue;
+    }
+}
 #pragma mark - React Methods
 
 RCT_EXPORT_METHOD(getPointInView:(nonnull NSNumber*)reactTag

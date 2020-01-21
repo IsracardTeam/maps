@@ -37,6 +37,7 @@ typedef void (^FoundLayerBlock) (MGLStyleLayer* layer);
 
 @property (nonatomic, strong) NSMutableDictionary<NSString*, NSMutableArray<FoundLayerBlock>*> *layerWaiters;
 
+@property (nonatomic, strong) NSString *reactLocale;
 @property (nonatomic, assign) BOOL reactLocalizeLabels;
 @property (nonatomic, assign) BOOL reactScrollEnabled;
 @property (nonatomic, assign) BOOL reactPitchEnabled;
